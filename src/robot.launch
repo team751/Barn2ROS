@@ -1,0 +1,3 @@
+<launch>
+    <node name="$(anon riocomms-motor)" pkg="roborio_comms" type="motor_sender.py" />
+</launch>
