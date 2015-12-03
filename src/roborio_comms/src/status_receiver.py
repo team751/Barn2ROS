@@ -7,7 +7,7 @@ from threading import Event
 from std_msgs.msg import String
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("0.0.0.0", 0))
+sock.bind(("0.0.0.0", 6000))
     
 def listener():
     rospy.init_node('status_receiver', anonymous=True)
