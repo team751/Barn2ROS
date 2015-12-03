@@ -11,7 +11,7 @@ sock.bind(("0.0.0.0", 6000))
     
 def listener():
     rospy.init_node('status_receiver', anonymous=True)
-    pub = rospy.Publisher('/robot/status', String, queue_size=10)
+    pub = rospy.Publisher('/robot/status', String, latch=True)
     
     while True:
         data, addr = sock.recvfrom(1024)

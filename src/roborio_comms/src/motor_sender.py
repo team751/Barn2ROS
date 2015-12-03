@@ -28,7 +28,8 @@ class SenderThread(Thread):
 
     def run(self):
         while not self.stopped.wait(.000001):
-            sock.sendto('[' + ','.join(xstr(xround(o, 4)) for o in output) + ']', ("192.168.2.1", 9999))
+            message = '[' + ','.join(xstr(xround(o, 4)) for o in output) + ']'
+            sock.sendto(message, ("192.168.2.1", 9999))
 
 def callback(data):
     output[controllers.index(data._connection_header["topic"])] = data.data
