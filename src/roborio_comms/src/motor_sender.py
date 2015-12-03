@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
-import threading
 import socket
+import threading
 from threading import Thread
 from threading import Event
 from std_msgs.msg import Float32
