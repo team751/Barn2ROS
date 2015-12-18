@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import rospy
 import math
-import collections
-from std_msgs.msg import Float32
+import time
 from geometry_msgs.msg import Twist
 
-motorOutput = collections.namedtuple('MotorOutput', ['left', 'right'])
+current_millis = lambda: int(round(time.time() * 1000))
 
 x = 0
 y = 0
@@ -17,10 +16,13 @@ neg_inertia_accumulator = 0
 
 wheelNonLinearity = .1
 
+lastMsg = current_millis()
+
 def joystickUpdated(data):
-  global x, y
+  global x, y, lastMsg
   x = data.linear.x
   y = data.linear.y
+  lastMsg = current_millis()
   
 def calculateMotorOutput(throttle, wheel):
   global oldWheel, neg_inertia_accumulator, quickStopAccumulator
@@ -41,8 +43,6 @@ def calculateMotorOutput(throttle, wheel):
   wheel = math.sin((math.pi / 2.0) * wheelNonLinearity * wheel) / math.sin((math.pi / 2.0) * wheelNonLinearity);
   wheel = math.sin((math.pi / 2.0) * wheelNonLinearity * wheel) / math.sin((math.pi / 2.0) * wheelNonLinearity);
   
-  left = 0
-  right = 0
   overpower = 0
   sensitivity = 0
   angular_power = 0
@@ -94,49 +94,31 @@ def calculateMotorOutput(throttle, wheel):
       quickStopAccumulator += 1
     else:
       quickStopAccumulator = 0.0
-      
-  right = linear_power
-  left = linear_power
   
-  left += angular_power
-  right -= angular_power
-  
-  if left > 1.0:
-    right -= overPower * (left - 1)
-    left = 1
-  elif right > 1:
-    left -= overPower * (right - 1)
-    right = 1
-  elif (left < -1):
-    right += overPower * (-1 - left)
-    left = -1
-  elif right < -1:
-    left += overPower * (-1 - right)
-    right = -1
-    
-  return motorOutput(left=left, right=right)
+  twist = Twist()
+  twist.linear.x = linear_power * 2
+  twist.angular.z = angular_power
 
-def limit(value):
-  if value > 1:
-    return 1
-  if value < -1:
-    return -1
-  return value
+  return twist
 
 def cheesydrive():
+  global x, y
   rospy.init_node('talker', anonymous=True)
   
-  lvelPub = rospy.Publisher(rospy.get_param('lvel_topic', '/robot/motors/lvel'), Float32, queue_size=10)
-  rvelPub = rospy.Publisher(rospy.get_param('rvel_topic','/robot/motors/rvel'), Float32, queue_size=10)
+  velPub = rospy.Publisher(rospy.get_param('vel_topic', '/husky_velocity_controller/cmd_vel'), Twist, queue_size=10)
   
   joystickSub = rospy.Subscriber(rospy.get_param('joystick_topic', "/driver/drivestick"), Twist, joystickUpdated)
     
   rate = rospy.Rate(10) # 10hz
   
   while not rospy.is_shutdown():
-    output = calculateMotorOutput(y, x)
-    lvelPub.publish(output.left)
-    rvelPub.publish(output.right)
+    if current_millis() - lastMsg > 500:
+      x = 0
+      y = 0
+    
+    twist = calculateMotorOutput(y, x)
+    velPub.publish(twist)
+  
     rate.sleep()
 
 if __name__ == '__main__':
