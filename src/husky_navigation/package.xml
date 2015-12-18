@@ -27,6 +27,7 @@
   <run_depend>nav_core</run_depend>
   <run_depend>base_local_planner</run_depend>
   <run_depend>dwa_local_planner</run_depend>
+  <run_depend>teb_local_planner</run_depend>
 
   <export>
   </export>

@@ -8,7 +8,7 @@ from std_msgs.msg import Float32
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-controllers = ["/lvolt", "/rvolt"]
+controllers = ["/lvel", "/rvel"]
 output = [None] * len(controllers)
 
 def xstr(s):
