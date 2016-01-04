@@ -1,23 +1,43 @@
-controller_frequency: 4.0
+controller_frequency: 3.0
 recovery_behaviour_enabled: true
-controller_patience: 10
-planner_patiance: 5
-ocillation_timeout: 5
+#controller_patience: 10
+#planner_patiance: 5
+#ocillation_timeout: 5
 
 GlobalPlanner:
-#  use_dijkstra: false
-#  use_grid_path: true
+    #  use_dijkstra: false
+    # use_grid_path: true
   allow_unknown: true # Specifies whether or not to allow navfn to create plans that traverse unknown space.
-  default_tolerance: 0.25 # A tolerance on the goal point for the planner.
+  # default_tolerance: 0.5 # A tolerance on the goal point for the planner.
 #DWAPlannerROS:
 
 TebLocalPlannerROS:
-  acc_lim_x: 1.0
-  acc_lim_theter: 1.5
-  max_vel_x: 2.0
-  max_vel_x_backwards: 2.0
-  max_vel_theta: 1.0
-  odom_topic: "/husky_velocity_controller/odom"
+    acc_lim_x: 1.0
+    acc_lim_theta: 1.0
+    max_vel_x: 3.0
+    max_vel_x_backwards: 0.3
+    max_vel_theta: 2.0
+    dt_ref: 0.3
+    dt_hysteresis: 0.2
+
+    odom_topic: "/husky_velocity_controller/odom"
+    map_frame: "/map"
+    # weight_kinematics_forward_drive: 0.0
+    # weight_poly_obstacle: 15.0
+    # penalty_scale: 0.1 
+    #enable_homotopy_class_planning: false
+
+    # xy_goal_tolerance: 0.5
+
+
+# TebLocalPlannerROS:
+    #  acc_lim_x: 1.0
+    # 
+    # acc_lim_theter: 1.5
+    #   max_vel_x: 2.0
+    # max_vel_x_backwards: 2.0
+    # max_vel_theta: 1.0
+    # odom_topic: "/husky_velocity_controller/odom"
   
 
 TebLocalPlannerROS2:
@@ -33,8 +53,8 @@ TebLocalPlannerROS2:
   max_vel_theta: 1.5
   
   # Goal Tolerance Parameters
-  yaw_goal_tolerance: 0.1
-  xy_goal_tolerance: 0.2
+  yaw_goal_tolerance: 0.2
+  xy_goal_tolerance: 0.5
   # latch_xy_goal_tolerance: false
 
   # # Forward Simulation Parameters
