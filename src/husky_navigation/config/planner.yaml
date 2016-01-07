@@ -1,4 +1,4 @@
-controller_frequency: 50.0
+controller_frequency: 20.0
 recovery_behaviour_enabled: true
 recovery_behaviors:
     - name: 'rotate_recovery'
@@ -44,7 +44,7 @@ TebLocalPlannerROS:
     teb_autosize: True
     dt_ref: 0.3
     dt_hysteresis: 0.1
-    global_plan_overwrite_orientation: False
+    global_plan_overwrite_orientation: True
    
     # Robot
    
@@ -56,41 +56,41 @@ TebLocalPlannerROS:
    
     # GoalTolerance
    
-    xy_goal_tolerance: 0.25
+    xy_goal_tolerance: 0.5
     yaw_goal_tolerance: 0.25
     free_goal_vel: True
    
     # Obstacles
    
-    min_obstacle_dist: 1.0
-    costmap_emergency_stop_dist: -1.0
+    min_obstacle_dist: 0.5
+    costmap_emergency_stop_dist: 0.01
     include_costmap_obstacles: True
-    costmap_obstacles_front_only: False
+    costmap_obstacles_front_only: True
     obstacle_poses_affected: 10
     line_obstacle_poses_affected: 25
     polygon_obstacle_poses_affected: 25
     costmap_converter_plugin: ""
     costmap_converter_spin_thread: True
-    costmap_converter_rate: 10
+    costmap_converter_rate: 5
    
     # Optimization
    
     no_inner_iterations: 5
-    no_outer_iterations: 2
+    no_outer_iterations: 3
     optimization_activate: True
     optimization_verbose: False
     penalty_scale: 0.1
     penalty_epsilon: 0.1
-    weight_max_vel_x: 100
+    weight_max_vel_x: 1
     weight_max_vel_theta: 1
     weight_acc_lim_x: 1
     weight_acc_lim_theta: 1
     weight_kinematics_nh: 1000
-    weight_kinematics_forward_drive: .1
-    weight_optimaltime: 30
-    weight_point_obstacle: 10
-    weight_line_obstacle: 10
-    weight_poly_obstacle: 10
+    weight_kinematics_forward_drive: 1
+    weight_optimaltime: 1
+    weight_point_obstacle: 30
+    weight_line_obstacle: 30
+    weight_poly_obstacle: 30
     weight_dynamic_obstacle: 10
     alternative_time_cost: False
    
@@ -99,9 +99,9 @@ TebLocalPlannerROS:
     enable_homotopy_class_planning: True
     enable_multithreading: True
     simple_exploration: False
-    max_number_classes: 10
-    roadmap_graph_no_samples: 4
-    roadmap_graph_area_width: 10
+    max_number_classes: 5
+    roadmap_graph_no_samples: 3
+    roadmap_graph_area_width: 5
     h_signature_prescaler: 0.5
     h_signature_threshold: 0.1
     obstacle_keypoint_offset: 0.1
