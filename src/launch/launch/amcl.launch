@@ -1,0 +1,11 @@
+<launch>
+  <!-- Params -->
+  <rosparam file="$(find launch)/config/amcl.yaml" />
+
+  <!-- Runs Map Server -->
+  <arg name="map_file" default="$(find launch)/maps/map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- Runs AMCL -->
+  <node name="amcl" pkg="amcl" type="amcl" />
+</launch>

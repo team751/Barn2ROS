@@ -1,0 +1,10 @@
+<launch>
+  <!-- Include lidar base -->
+  <include file="$(find launch)/launch/lidar.launch" />
+
+  <!-- Params -->
+  <rosparam file="$(find launch)/config/hector_mapping.yaml" />
+
+  <!-- Runs Hector Mapping -->
+  <node name="hector_slam" pkg="hector_mapping" type="hector_mapping" />
+</launch>

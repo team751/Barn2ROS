@@ -1,0 +1,7 @@
+<launch>
+  <!-- Include basic robot -->
+  <include file="$(find launch)/launch/robot_basic.launch" />
+
+  <!-- Include localization -->
+  <include file="$(find launch)/launch/localization.launch" />
+</launch>

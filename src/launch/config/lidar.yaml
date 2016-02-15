@@ -1,0 +1,5 @@
+XV11Driver:
+  port: /dev/ttyUSB0
+  baud_rate: 115200
+  firmware_version: 2
+  frame_id: laser_frame

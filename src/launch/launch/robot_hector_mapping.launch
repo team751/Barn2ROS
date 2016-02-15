@@ -1,0 +1,7 @@
+<launch>
+  <!-- Include localized robot -->
+  <include file="$(find launch)/launch/robot_localized.launch" />
+
+  <!-- Include lidar -->
+  <include file="$(find launch)/launch/hector_mapping.launch" />
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+  <!-- Params -->
+  <rosparam file="$(find launch)/config/localization.yaml" />
+
+  <!-- Handles converting encoders to odometry -->
+  <!-- <node name="RobotLocalization" pkg="robot_localization" type="ekf_localization_node" /> -->
+</launch>

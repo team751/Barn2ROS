@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="autonomous_commands" type="DriveForTime.py" name="drive_for_time" />
+	<node pkg="autonomous_commands" type="DriveToDefense.py" name="drive_to_defense" />
+	<node pkg="autonomous_commands" type="DriveToLowGoal.py" name="drive_to_low_goal" />
+</launch>

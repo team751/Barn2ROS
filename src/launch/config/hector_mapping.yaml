@@ -1,0 +1,4 @@
+hector_slam:
+  map_pub_period: 0.25
+  map_frame: map
+  map_resolution: 0.025

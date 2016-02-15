@@ -1,0 +1,57 @@
+<launch>
+	<!-- Robot pose -->
+	<arg name="x" default="0"/>
+	<arg name="y" default="0"/>
+	<arg name="z" default="0"/>
+	<arg name="roll" default="0"/>
+	<arg name="pitch" default="1.5"/>
+	<arg name="yaw" default="0"/>
+
+	<param name="/use_sim_time" value="true"/>
+
+	<arg name="paused" default="false" />
+	<arg name="use_sim_time" default="true" />
+	<arg name="gui" default="true" />
+	<arg name="headless" default="false" />
+	<arg name="debug" default="false" />
+
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name" value="$(find robot_gazebo)/worlds/frc2016.world" />
+		<arg name="debug" value="$(arg debug)" />
+		<arg name="gui" value="$(arg gui)" />
+		<arg name="paused" value="$(arg paused)" />
+		<arg name="use_sim_time" value="$(arg use_sim_time)" />
+		<arg name="headless" value="$(arg headless)" />
+	</include>
+
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_gazebo)/rviz/rviz.rviz" />
+
+	<group ns="robot">
+		<!-- Load joint controller configurations from YAML file to parameter server -->
+		<rosparam file="$(find robot_description)/config/robot_control.yaml" command="load"/>
+	</group>
+
+	<param name="/robot/robot_description" command="$(find xacro)/xacro.py '$(find robot_description)/urdf/robot.xacro'" />
+	<param name="robot_description" command="$(find xacro)/xacro.py '$(find robot_description)/urdf/robot.xacro'" />
+
+ 	<!-- Include lidar base -->
+ 	<include file="$(find launch)/launch/lidar.launch" />
+	<include file="$(find launch)/launch/amcl.launch" />
+	<include file="$(find launch)/launch/move_base.launch" />
+
+	<include file="$(find autonomous_commands)/launch/action_servers.launch" />
+
+	<node name="cmd_vel_relay" pkg="topic_tools" type="relay" args="cmd_vel /robot/ddc/cmd_vel" />
+	<node name="odom_relay" pkg="topic_tools" type="relay" args="odom /robot/ddc/odom" />
+
+	<node name="scan_transformer" pkg="laser_scan_combiner" type="scan_transformer.py" />
+
+	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model robot -param robot_description  -x $(arg x) -y $(arg y)
+	 -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
+
+	<node pkg="tf" type="static_transform_publisher" name="rear_lidar_base_link" args="-.2 0 -0.063 3.1415 -0.07 0 base_link xv11_rear 100"/> 
+	<node pkg="tf" type="static_transform_publisher" name="front_lidar_base_link" args=".2 0 -0.063 0 -0.07 0 base_link xv11_front 100"/> 
+
+	<!-- load the controllers -->
+	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/robot" args="joint_state_controller ddc" />
+</launch>

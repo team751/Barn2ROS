@@ -1,0 +1,6 @@
+DiffTf:
+  rate: 10
+  ticks_meter: 563.93 # (8*pi*2.54)/100/360
+  base_width: .58 # in meters
+  base_frame_id: base_link
+  odom_frame_id: odom

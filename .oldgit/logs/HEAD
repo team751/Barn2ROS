@@ -1,0 +1,13 @@
+0000000000000000000000000000000000000000 a5e49a16d243dc5141df1039a8ca46ea6c6b47b0 Sam Baumgarten <sam@sam-All-Series.(none)> 1454991656 -0800	clone: from git@github.com:team751/Barn2ROS.git
+a5e49a16d243dc5141df1039a8ca46ea6c6b47b0 5120411495c90ddc41c217bb44d375aa867f78e5 Sam Baumgarten <sam@sam-All-Series.(none)> 1454992543 -0800	checkout: moving from master to simple
+5120411495c90ddc41c217bb44d375aa867f78e5 35098970ed9019d6b0cd5a0e758a9a265be328e1 Your Name <you@example.com> 1455001524 -0800	commit: Add working simulation
+35098970ed9019d6b0cd5a0e758a9a265be328e1 99a6ce1ac17552af130f66ab5cd9fe83777944ad Your Name <you@example.com> 1455148996 -0800	commit: Switch to ros_control
+99a6ce1ac17552af130f66ab5cd9fe83777944ad 5c589b2fe06806983a1d02a593b62e09a508ce7f Your Name <you@example.com> 1455168589 -0800	commit: update auto mode
+5c589b2fe06806983a1d02a593b62e09a508ce7f 933509d40929e5bda68a79acb97654d774b904e0 Your Name <you@example.com> 1455168955 -0800	commit: tweak params
+933509d40929e5bda68a79acb97654d774b904e0 49095a4ad3701a850a09caf3332ce1465c271981 Your Name <you@example.com> 1455495822 -0800	commit: continue work on ros_control
+49095a4ad3701a850a09caf3332ce1465c271981 d31684a1cb717949a2c1cff6e6e2d0f0a991675c Your Name <you@example.com> 1455502497 -0800	commit: ros_control is pretty much working
+d31684a1cb717949a2c1cff6e6e2d0f0a991675c 515bdf5b8694578e25b271c93f48727d9a6bf601 Your Name <you@example.com> 1455510044 -0800	commit: remove dependencies
+515bdf5b8694578e25b271c93f48727d9a6bf601 d31684a1cb717949a2c1cff6e6e2d0f0a991675c Your Name <you@example.com> 1455512367 -0800	checkout: moving from simple to d31684a1cb717949a2c1cff6e6e2d0f0a991675c
+d31684a1cb717949a2c1cff6e6e2d0f0a991675c 515bdf5b8694578e25b271c93f48727d9a6bf601 Your Name <you@example.com> 1455512382 -0800	checkout: moving from d31684a1cb717949a2c1cff6e6e2d0f0a991675c to simple
+515bdf5b8694578e25b271c93f48727d9a6bf601 20ace715fa2951a4cd7c7d56ace150f49377b7da Your Name <you@example.com> 1455514404 -0800	commit: working ros_control
+20ace715fa2951a4cd7c7d56ace150f49377b7da 20ace715fa2951a4cd7c7d56ace150f49377b7da Your Name <you@example.com> 1455514870 -0800	checkout: moving from simple to release

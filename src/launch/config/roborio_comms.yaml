@@ -1,0 +1,24 @@
+MotorSender:
+  send_wait_time: .000001
+  round_to: 4
+  message_prefix: "["
+  message_suffix: "]"
+  message_divider: ","
+  
+  controller_topics:
+    - /lvel
+    - /rvel
+    
+  network:
+    ip: 127.0.0.1
+    port: 9999
+    
+StatusReciever:
+  imu_topic: /imu
+  odom_frame: /odom
+  lwheel_topic: /lwheel
+  rwheel_topic: /rwheel
+  
+  network:
+    ip: 0.0.0.0
+    port: 6000

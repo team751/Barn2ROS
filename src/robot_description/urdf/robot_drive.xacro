@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:macro name="superstructure" params="suffix origin">
+		<link name="superstructure${suffix}">
+			<visual>
+				<geometry>
+					<box size=".0508 .0508 0.22265" />
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</visual>
+
+			<collision>
+				<geometry>
+					<box size=".0508 .0508 0.22265" />
+				</geometry>
+
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</collision>
+
+			<inertial>
+				<mass value="1.36" />
+				<inertia
+					ixx="1.0" ixy="0.0" ixz="0.0"
+					iyy="1.0" iyz="0.0"
+					izz="1.0" />
+			</inertial>
+
+			<gazebo reference="superstructure${suffix}">
+				<mu1>1.1</mu1>
+				<mu2>1.1</mu2>
+				<material>Gazebo/Black</material>
+			</gazebo>
+		</link>
+
+		<joint name="base_to_superstructure${suffix}" type="fixed">
+			<parent link="base_link" />
+			<child link="superstructure${suffix}" />
+			<origin xyz="${origin}" rpy="0 0 0" />
+		</joint>
+
+
+		<link name="superstructure-rear${suffix}">
+			<visual>
+				<geometry>
+					<box size=".0508 .0508 0.22265" />
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</visual>
+
+			<collision>
+				<geometry>
+					<box size=".0508 .0508 0.22265" />
+				</geometry>
+
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</collision>
+
+			<inertial>
+				<mass value="1.36" />
+				<inertia
+					ixx="1.0" ixy="0.0" ixz="0.0"
+					iyy="1.0" iyz="0.0"
+					izz="1.0" />
+			</inertial>
+
+			<gazebo reference="superstructure-rear${suffix}">
+				<mu1>1.1</mu1>
+				<mu2>1.1</mu2>
+				<material>Gazebo/Black</material>
+			</gazebo>
+		</link>
+
+		<joint name="ss_to_ssrear${suffix}" type="fixed">
+			<parent link="superstructure${suffix}" />
+			<child link="superstructure-rear${suffix}" />
+			<origin xyz="-.71 0 0" rpy="0 0 0" />
+		</joint>
+
+		<link name="superstructure-cross${suffix}">
+			<visual>
+				<geometry>
+					<box size="0.6592 .0508 0.0508" />
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</visual>
+
+			<collision>
+				<geometry>
+					<box size="0.6592 .0508 0.0508" />
+				</geometry>
+
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</collision>
+
+			<inertial>
+				<mass value="1.36" />
+				<inertia
+					ixx="1.0" ixy="0.0" ixz="0.0"
+					iyy="1.0" iyz="0.0"
+					izz="1.0" />
+			</inertial>
+
+			<gazebo reference="superstructure-cross${suffix}">
+				<mu1>1.1</mu1>
+				<mu2>1.1</mu2>
+				<material>Gazebo/Black</material>
+			</gazebo>
+		</link>
+
+		<joint name="ss_to_sscross${suffix}" type="fixed">
+			<parent link="superstructure${suffix}" />
+			<child link="superstructure-cross${suffix}" />
+			<origin xyz="-0.355 0 0.085925" rpy="0 0 0" />
+		</joint>
+	</xacro:macro>
+	<xacro:macro name="wheel" params="suffix origin motor">
+		<link name="wheel${suffix}">
+			<visual>
+				<geometry>
+					<cylinder length="0.05" radius="0.11" />
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</visual>
+
+			<collision>
+				<geometry>
+					<cylinder length="0.05" radius="0.11" />
+				</geometry>
+
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<material name="black">
+					<color rgba="0 0 0 1" />
+				</material>
+			</collision>
+
+			<inertial>
+				<mass value="1.36" />
+				<inertia
+					ixx="1.0" ixy="0.0" ixz="0.0"
+					iyy="1.0" iyz="0.0"
+					izz="1.0" />
+			</inertial>
+
+			<gazebo reference="wheel${suffix}">
+				<mu1>1.1</mu1>
+				<mu2>1.1</mu2>
+				<material>Gazebo/Black</material>
+			</gazebo>
+		</link>
+
+		<joint name="base_to_wheel${suffix}" type="continuous">
+			<parent link="base_link" />
+			<child link="wheel${suffix}" />
+			<axis xyz="0 0 1" />
+			<origin xyz="${origin}" rpy="4.71238898038 0 0" />
+		</joint>
+
+		  <transmission name="tran${suffix}">
+		   <type>hardware_interface</type>
+		    <joint name="base_to_wheel${suffix}">
+		       <hardwareInterface>VelocityJointInterface</hardwareInterface>
+		    </joint>
+			<actuator name="${motor}">
+				<hardwareInterface>VelocityJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		    <mechanicalReduction>1</mechanicalReduction>
+		    <motorTorqueConstant>1</motorTorqueConstant>
+		  </transmission>
+	</xacro:macro>
+
+	<xacro:macro name="lidar" params="suffix origin topic minang maxang rotation">
+		<link name="xv11_${suffix}">
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<box size="0.001 0.001 0.001"/>
+				</geometry>
+			</collision>
+
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<box size="0.15 0.15 0.15"/>
+				</geometry>
+			</visual>
+
+			<inertial>
+				<mass value="1e-5" />
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+			</inertial>
+		</link>
+
+		<joint name="xv11_${suffix}_joint" type="fixed">
+			<axis xyz="0 0 0" />
+			<origin xyz="${origin}" rpy="0 -0.07 ${rotation}"/>
+			<parent link="base_link"/>
+			<child link="xv11_${suffix}"/>
+		</joint>
+
+				<!-- hokuyo -->
+		<gazebo reference="xv11_${suffix}">
+			<sensor type="gpu_ray" name="xv11_${suffix}_sensor">
+				<pose>0 0 0 0 0 0</pose>
+				<visualize>false</visualize>
+				<update_rate>40</update_rate>
+				<ray>
+					<scan>
+						<horizontal>
+							<samples>720</samples>
+							<resolution>1</resolution>
+							<min_angle>${minang}</min_angle>
+							<max_angle>${maxang}</max_angle>
+						</horizontal>
+					</scan>
+					<range>
+						<min>0.10</min>
+						<max>30.0</max>
+						<resolution>0.01</resolution>
+					</range>
+					<noise>
+						<type>gaussian</type>
+						<!-- Noise parameters based on published spec for Hokuyo laser
+						   achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+						   stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+						   reading. -->
+						<mean>0.0</mean>
+						<stddev>0.01</stddev>
+					</noise>
+				</ray>
+				<plugin name="xv11_${suffix}_controller" filename="libgazebo_ros_gpu_laser.so">
+					<topicName>${topic}</topicName>
+   					<frameName>xv11_${suffix}</frameName>
+   				</plugin>
+  			</sensor>
+		</gazebo>
+	</xacro:macro>
+
+       <link name="base_link">
+               <visual>
+                       <geometry>
+                               <box size="0.76 0.71 0.05" />
+                       </geometry>
+               </visual>
+
+               <collision>
+                       <geometry>
+                               <box size="0.76 0.71 0.05" />
+                       </geometry>
+               </collision>
+
+               <inertial>
+                       <mass value="1000" />
+                       <inertia
+                               ixx="1.0" ixy="0.0" ixz="0.0"
+                               iyy="1.0" iyz="0.0"
+                               izz="1.0" />
+               </inertial>
+
+               <gazebo reference="base_link">
+                       <mu1>10000</mu1>
+                       <mu2>10000</mu2>
+                       <material>Gazebo/Black</material>
+               </gazebo>
+       </link>
+
+
+
+	<xacro:superstructure suffix="left" origin="0.3546 -0.27 0.135" />
+	<xacro:superstructure suffix="right" origin="0.3546 0.27 0.135" />
+
+	<xacro:wheel suffix="rcenter" origin="0 0.395 -.0063" motor="rmotor" />
+	<xacro:wheel suffix="lcenter" origin="0 -0.395 -.0063" motor="lmotor" />
+
+	<xacro:wheel suffix="rfront" origin=".25 0.395 0" motor="rmotor" />
+	<xacro:wheel suffix="lfront" origin=".25 -0.395 0" motor="lmotor" />
+
+	<xacro:wheel suffix="rrear" origin="-.25 0.395 0" motor="rmotor" />
+	<xacro:wheel suffix="lrear" origin="-.25 -0.395 0" motor="lmotor" />
+
+	<xacro:lidar suffix="rear" origin="-.2 0 -0.063" topic="laserscan" minang="-1.021018" maxang="1.021018" rotation="3.1415" />370.487000000
+	<xacro:lidar suffix="front" origin=".2 0 -0.063" topic="laserscan" minang="-1.021018" maxang="1.021018" rotation="0" />
+
+
+
+
+
+</robot>

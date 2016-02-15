@@ -1,0 +1,16 @@
+<launch>
+  <!-- Params -->
+  <rosparam file="$(find launch)/config/lidar.yaml" />
+
+  <node pkg="laser_scan_combiner" type="scan_transformer.py" name="st" />
+
+  <remap from="cloud_in" to="scanpc" />
+
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pctls" output="screen">
+    <param name="max_height" value="3" />
+    <param name="range_max" value="6" />
+    <param name="angle_max" value="3.14159" />
+    <param name="angle_min" value="-3.14159" />
+    <param name="target_frame" value="base_link" />
+  </node>
+</launch>
