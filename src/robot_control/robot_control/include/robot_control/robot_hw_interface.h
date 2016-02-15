@@ -63,7 +63,13 @@ public:
 
   /** \breif Enforce limits for all values before writing */
   virtual void enforceLimits(ros::Duration &period);
-
+protected:
+  ros::Publisher lvelfront_pub;
+  ros::Publisher lvelcenter_pub;
+  ros::Publisher lvelrear_pub;
+  ros::Publisher rvelfront_pub;
+  ros::Publisher rvelcenter_pub;
+  ros::Publisher rvelrear_pub;
 };  // class
 
 }  // namespace
