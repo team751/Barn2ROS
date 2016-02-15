@@ -43,8 +43,8 @@
 
   <build_depend>robot_description</build_depend>
 
-  <run_depend>rviz</run_depend>
-  <run_depend>gazebo_ros</run_depend>
+  <!-- <run_depend>rviz</run_depend> -->
+  <!-- <run_depend>gazebo_ros</run_depend> -->
   <run_depend>launch</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>laser_scan_combiner</run_depend>

@@ -1,8 +1,8 @@
 # ros_control_boilerplate Settings -----------------------
 # Settings for ros_control control loop
 generic_hw_control_loop:
-  loop_hz: 300.0
-  cycle_time_error_threshold: 0.01
+  loop_hz: 2.0
+  cycle_time_error_threshold: 0.65
 
 # Settings for ros_control hardware interface
 hardware_interface:

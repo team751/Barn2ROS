@@ -45,7 +45,7 @@
   <run_depend>amcl</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>xv_11_laser_driver</run_depend>
-  <run_depend>teb_local_planner</run_depend>
+  <!-- <run_depend>teb_local_planner</run_depend> -->
   <run_depend>navfn</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
