@@ -23,9 +23,6 @@ class DriveForwardForTime(object):
     self._as.start()
     
   def execute(self, goal):
-    # helper variables
-    r = rospy.Rate(1)
-    
     self._startTime = int(round(time.time() * 1000))
 
     rate = rospy.Rate(20) # 20hz
@@ -34,6 +31,8 @@ class DriveForwardForTime(object):
       publisher.publish(goal.cmd)
       self._as.publish_feedback(self._feedback)
       rate.sleep()
+
+    # Stop on completion
     publisher.publish(Twist())
 
     self._as.set_succeeded(self._result)
