@@ -1,8 +1,8 @@
 amcl:
-  min_particles: 1000
+  min_particles: 100
   max_particles: 5000
-  odom_alpha1: 0.2
-  odom_alpha2: 0.35
-  odom_alpha3: 0.35
-  odom_alpha4: 0.35
+  odom_alpha1: 0.6
+  odom_alpha2: 0.6
+  odom_alpha3: 0.6
+  odom_alpha4: 0.6
   odom_frame_id: odom

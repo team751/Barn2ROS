@@ -229,7 +229,7 @@
 				<ray>
 					<scan>
 						<horizontal>
-							<samples>720</samples>
+							<samples>360</samples>
 							<resolution>1</resolution>
 							<min_angle>${minang}</min_angle>
 							<max_angle>${maxang}</max_angle>
@@ -238,7 +238,7 @@
 					<range>
 						<min>0.10</min>
 						<max>30.0</max>
-						<resolution>0.01</resolution>
+						<resolution>0.1</resolution>
 					</range>
 					<noise>
 						<type>gaussian</type>
@@ -286,7 +286,79 @@
                </gazebo>
        </link>
 
+       <joint name="camera_joint" type="fixed">
+    		<axis xyz="0 1 0" />
+    		<origin xyz="0.4 0 .1" rpy="0 0 0"/>
+    		<parent link="base_link"/>
+    		<child link="camera_link"/>
+  		</joint>
 
+	  <!-- Camera -->
+	  <link name="camera_link">
+	    <collision>
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <geometry>
+	    <box size="${camera_link} ${camera_link} ${camera_link}"/>
+	      </geometry>
+	    </collision>
+
+	    <visual>
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <geometry>
+	    <box size="${camera_link} ${camera_link} ${camera_link}"/>
+	      </geometry>
+	      <material name="red"/>
+	    </visual>
+
+	    <inertial>
+	      <mass value="1e-5" />
+	      <origin xyz="0 0 0" rpy="0 0 0"/>
+	      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+	    </inertial>
+	  </link>
+
+  	<xacro:property name="camera_link" value="0.05" /> <!-- Size of square 'camera' box -->
+
+  	 <!-- camera -->
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>rrbot/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
 
 	<xacro:superstructure suffix="left" origin="0.3546 -0.27 0.135" />
 	<xacro:superstructure suffix="right" origin="0.3546 0.27 0.135" />
@@ -300,8 +372,8 @@
 	<xacro:wheel suffix="rrear" origin="-.25 0.395 0" motor="rmotor" />
 	<xacro:wheel suffix="lrear" origin="-.25 -0.395 0" motor="lmotor" />
 
-	<xacro:lidar suffix="rear" origin="-.2 0 -0.063" topic="laserscan" minang="-1.021018" maxang="1.021018" rotation="3.1415" />370.487000000
-	<xacro:lidar suffix="front" origin=".2 0 -0.063" topic="laserscan" minang="-1.021018" maxang="1.021018" rotation="0" />
+	<xacro:lidar suffix="rear" origin="-.2 0 -0.063" topic="laserscan" minang="-3.1415" maxang="3.1415" rotation="3.1415" />370.487000000
+	<xacro:lidar suffix="front" origin=".2 0 -0.063" topic="laserscan_front" minang="-1.021018" maxang="1.021018" rotation="0" />
 
 
 

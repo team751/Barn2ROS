@@ -1,6 +1,14 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <world name="default">
+  <scene>
+    <sky>
+      <clouds>
+        <speed>12</speed>
+      </clouds>
+    </sky>
+  </scene>
+
     <include>
       <uri>model://sun</uri>
     </include>
@@ -49,6 +57,38 @@
         </axis>
       </joint>
     </model>
+
+
+    <include>
+      <pose>-2.9751 0.03770 0.13334 0 0 0</pose>
+      <name>ball1</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
+    <include>
+      <pose>-1.81765 0.03770 0.13334 0 0 0</pose>
+      <name>ball2</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
+    <include>
+      <pose>-0.66019 0.03770 0.13334 0 0 0</pose>
+      <name>ball3</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
+    <include>
+      <pose>0.49727 0.03770 0.13334 0 0 0</pose>
+      <name>ball4</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
+    <include>
+      <pose>1.65472 0.03770 0.13334 0 0 0</pose>
+      <name>ball5</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
+    <include>
+      <pose>2.81218 0.03770 0.13334 0 0 0</pose>
+      <name>ball6</name>
+      <uri>model://frc2016_ball</uri>
+    </include>
 
     <include>
       <pose>0.73275 -2.76511 0 0 0 0</pose>

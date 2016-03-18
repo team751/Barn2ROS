@@ -25,7 +25,7 @@ class AutonomousController():
         dtgoal = DriveToDefenseGoal()
         dtgoal.defense = 5
 
-        rospy.loginfo("Drive to goal")
+        rospy.loginfo("Drive to defense")
 
         self.drive_to_defense.send_goal(dtgoal)
 
@@ -37,18 +37,21 @@ class AutonomousController():
 
             dfgoal = DriveForTimeGoal()
             dfgoal.cmd = Twist()
-            dfgoal.cmd.linear.x = 0.75
-            dfgoal.time = 5500
+            dfgoal.cmd.linear.x = 1.0
+            dfgoal.time = 3000
             self.drive_for_time.send_goal(dfgoal)
-
+            success = self.drive_for_time.wait_for_result(rospy.Duration(60))
+            
             self.drive_to_low_goal.wait_for_server(rospy.Duration(5))
 
+            rospy.loginfo("Drive to low goal")
             dlggoal = DriveToLowGoalGoal()
             dlggoal.goal = 1
             self.drive_to_low_goal.send_goal(dlggoal)
             success = self.drive_to_low_goal.wait_for_result(rospy.Duration(60))
 
             if success:
+                rospy.loginfo("Drive forwards into low goal")
                 dfgoal.cmd.linear.x = 3.0
                 dfgoal.time = 1000
                 self.drive_for_time.send_goal(dfgoal)
