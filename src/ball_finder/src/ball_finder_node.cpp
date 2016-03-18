@@ -129,6 +129,8 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
     double minScore = 10000000000;
   double minX = 0;
   double minY = 0;
+  double minIntensity = 0;
+  int minPFD = 0;
 
   visualization_msgs::MarkerArray markerArray;
 
@@ -138,34 +140,62 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   //       int y = range[i] * sin(theta);        
   //     }
 
-      for (int a = 0; a < 680; a += 2) {
-        bool equation = a > 340;
-        int i = a % 340;
+
+double rOrig = .16/2;
+      for (int a = 1; a < 720; a += 2) {
+        bool equation = a > 360;
+        int i = a % 360;
 
         float theta = msg->angle_min + i * msg->angle_increment;
         double b = msg->ranges[i] * cos(theta); // x1
         double e = msg->ranges[i] * sin(theta); // y1
-        double c = msg->ranges[i + 1] * cos(theta + msg->angle_increment); // x2
-        double f = msg->ranges[i + 1] * sin(theta + msg->angle_increment); // y2
+        double c = msg->ranges[i + 2] * cos(theta + msg->angle_increment); // x2
+        double f = msg->ranges[i + 2] * sin(theta + msg->angle_increment); // y2
 
-        double  r = .11;
+        double  r = rOrig;
 
         if (b == c || e  == f) continue;
+
+        // std::cout << "T: " << theta << " R: " << msg->ranges[i] << " X1: " << b << " Y1: " << e << std::endl;
 
         double x0 = computeXVal(b, c, e, f, r, false);
         double y0 = computeYVal(x0, b, c, e, f, r);
 
+        if (msg->ranges[i] < .15) continue;
+
+
         if (std::isnan(x0) || std::isnan(y0)) continue;
+
+        // std::cout << "stillAlive" << std::endl; 
+
+        int pointsForDistance = 3 * (720*asin(r/(2*msg->ranges[i])))/(2*3.1415);
+
+        if (pointsForDistance < 5) continue;
+
+        double lastRange = msg->ranges[i];
 
         int xs = 1;
         double score = 0;
-        for (int j = 0; j <= 20; j += 2) {
-          double dist = msg->ranges[i + 1 + j];
-          double cx = dist * cos(theta + msg->angle_increment * (1 + j));
-          double cy = dist * sin(theta + msg->angle_increment * (1 + j));
+        double slope= 1000;
+        double newSlope;
+        for (int j = 2; j <= pointsForDistance; j += 2) {
+          double dist = msg->ranges[i + j];
+
+          if (fabs(lastRange - dist) > .2) break;
+          lastRange = dist;
+
+          double cx = dist * cos(theta + msg->angle_increment * (2 + j));
+          double cy = dist * sin(theta + msg->angle_increment * (2 + j));
 
         double cx0 = computeXVal(b, cx, e, cy, r, equation);
         double cy0 = computeYVal(cx0, b, cx, e, cy, r);
+
+
+        newSlope = (y0 - cy0) / (x0 - cx0);
+        if (slope == 1000) {
+          slope = newSlope;
+        }
+        
 
         // std::cout << cx0 << std::endl;
 
@@ -185,17 +215,32 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
         // y0 += cy0;
         // y0 /= 2;
 
-        double sq = (cx - x0)*(cx - x0) + (cy - y0)*(cy - y0) * j;
-        double distFromCenter = std::sqrt(sq);
+        double sq = (cx - x0)*(cx - x0) + (cy - y0)*(cy - y0);
+        double distFromCenter = std::sqrt(sq) * (j/4.0);
         double distFromCenterAbs = fabs(distFromCenter);
+        double oldR = r;
+
+        r = (((j / 2) - 1) * r + distFromCenterAbs) / (j / 2);
+
 
           double cr = fabs(r - distFromCenter);
+
+        cr += fabs(oldR - r);
 // std::cout << distFromCenterAbs << std::endl;
           cr *= 1000.0;
 
           score += cr;
         }
 
+        score += (r - rOrig) * 500;
+
+        bool bad = false;
+
+        if (fabs(slope - newSlope) < r / 2)
+        {
+          score += 100000;
+          bad = true;
+        }
 
         visualization_msgs::Marker marker;
         marker.header.frame_id = "xv11_front";
@@ -211,29 +256,31 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
         marker.pose.orientation.w = 1.0;
-        marker.scale.x = .05;
-        marker.scale.y = .05;
-        marker.scale.z = .05;
+        marker.scale.x = r * 2;
+        marker.scale.y = r * 2;
+        marker.scale.z = r * 2;
         marker.color.a = 1.0; // Don't forget to set the alpha!
-        marker.color.r = 0.0;
+        marker.color.r = bad ? 1 : 0;
         marker.color.g = 0.0;
-        marker.color.b = score;
+        marker.color.b = score / 1000.0;
 
-  if (score < 100) markerArray.markers.push_back(marker);
+        if (score < 100 && r - rOrig <= .2) markerArray.markers.push_back(marker);
 
 
-        if (abs(score) < minScore) {
+        if (abs(score) < minScore && r - rOrig <= .2) {
 
           minScore = abs(score);
           minX = x0;
           minY = y0;
+          minPFD = pointsForDistance;
+          minIntensity = msg->intensities[i];
         }
 
       }
 
-      std::cout << minScore << " => " << " " << minX << " : " << minY << std::endl;
+      std::cout << minScore << ", " << minPFD << " => " << " " << minX << " : " << minY << std::endl;
 
-if (minScore < 200 && minScore > 0) {
+if (minScore < 100 && minScore > 0) {
   visualization_msgs::Marker marker;
   marker.header.frame_id = "xv11_front";
   marker.header.stamp = ros::Time();
@@ -279,7 +326,6 @@ if (minScore < 200 && minScore > 0) {
 }
 
   vis_pub.publish( markerArray );
-  ROS_INFO("I heard");
 }
 
 int main(int argc, char **argv)
@@ -318,7 +364,7 @@ int main(int argc, char **argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-  ros::Subscriber sub = n.subscribe("/laserscan_front", 1000, chatterCallback);
+  ros::Subscriber sub = n.subscribe("/scan", 1000, chatterCallback);
 
   vis_pub = n.advertise<visualization_msgs::MarkerArray>( "markerArray", 0 );
   pose_pub = n.advertise<geometry_msgs::PoseStamped>( "ballPose", 0 );
