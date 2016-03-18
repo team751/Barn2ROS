@@ -38,6 +38,8 @@
 */
 
 #include <robot_control/robot_hw_interface.h>
+#include "ros/ros.h"
+#include "std_msgs/Float32.h"
 
 namespace robot_control
 {
@@ -45,6 +47,16 @@ namespace robot_control
 RobotHWInterface::RobotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
   : ros_control_boilerplate::GenericHWInterface(nh, urdf_model)
 {
+
+  ros::NodeHandle n;
+
+  lvelfront_pub = n.advertise<std_msgs::Float32>("/lvelfront", 1000);
+  lvelcenter_pub = n.advertise<std_msgs::Float32>("/lvelcenter", 1000);
+  lvelrear_pub = n.advertise<std_msgs::Float32>("/lvelrear", 1000);
+  rvelfront_pub = n.advertise<std_msgs::Float32>("/rvelfront", 1000);
+  rvelcenter_pub = n.advertise<std_msgs::Float32>("/rvelcenter", 1000);
+  rvelrear_pub = n.advertise<std_msgs::Float32>("/rvelrear", 1000);
+
   ROS_INFO_NAMED("robot_hw_interface", "RobotHWInterface Ready.");
 }
 
@@ -66,7 +78,28 @@ void RobotHWInterface::write(ros::Duration &elapsed_time)
   // Safety
   enforceLimits(elapsed_time);
 
-  std::cout << "1: " << joint_velocity_command_[0] << " 2: " << joint_velocity_command_[1] << std::endl;
+  std_msgs::Float32 lvelfront_vel;
+  std_msgs::Float32 lvelcenter_vel;
+  std_msgs::Float32 lvelrear_vel;
+  std_msgs::Float32 rvelfront_vel;
+  std_msgs::Float32 rvelcenter_vel;
+  std_msgs::Float32 rvelrear_vel;
+
+  lvelfront_vel.data = (float)joint_velocity_command_[0];
+  lvelcenter_vel.data = (float)joint_velocity_command_[1];
+  lvelrear_vel.data = (float)joint_velocity_command_[2];
+  rvelfront_vel.data = (float)joint_velocity_command_[3];
+  rvelcenter_vel.data = (float)joint_velocity_command_[4];
+  rvelrear_vel.data = (float)joint_velocity_command_[5];
+
+  lvelfront_pub.publish(lvelfront_vel);
+  lvelcenter_pub.publish(lvelcenter_vel);
+  lvelrear_pub.publish(lvelrear_vel);
+  rvelfront_pub.publish(rvelfront_vel);
+  rvelcenter_pub.publish(rvelcenter_vel);
+  rvelrear_pub.publish(rvelrear_vel);
+
+  // std::cout << "1: " << joint_velocity_command_[0] << " 2: " << joint_velocity_command_[1] << std::endl;
 
   // ----------------------------------------------------
   // ----------------------------------------------------

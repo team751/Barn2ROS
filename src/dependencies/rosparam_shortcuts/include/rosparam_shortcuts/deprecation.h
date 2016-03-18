@@ -1,7 +1,7 @@
 /*********************************************************************
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2015, University of Colorado, Boulder
+ *  Copyright (c) 2012, Willow Garage, Inc.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@
  *     copyright notice, this list of conditions and the following
  *     disclaimer in the documentation and/or other materials provided
  *     with the distribution.
- *   * Neither the name of the Univ of CO, Boulder nor the names of its
+ *   * Neither the name of Willow Garage nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
  *
@@ -32,46 +32,20 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman
-   Desc:   Example ros_control hardware interface blank template for the Robot
-           For a more detailed simulation example, see sim_hw_interface.h
-*/
+#ifndef ROSPARAM_SHORTCUTS_DEPRECATION_H
+#define ROSPARAM_SHORTCUTS_DEPRECATION_H
 
-#ifndef ROBOT_CONTROL__ROBOT_HW_INTERFACE_H
-#define ROBOT_CONTROL__ROBOT_HW_INTERFACE_H
+/** \def ROSPARAM_SHORTCUTS_DEPRECATED
+    Macro that marks functions as deprecated */
 
-#include <ros_control_boilerplate/generic_hw_interface.h>
-
-namespace robot_control
-{
-
-/// \brief Hardware interface for a robot
-class RobotHWInterface : public ros_control_boilerplate::GenericHWInterface
-{
-public:
-  /**
-   * \brief Constructor
-   * \param nh - Node handle for topics.
-   */
-  RobotHWInterface(ros::NodeHandle& nh, urdf::Model* urdf_model = NULL);
-
-  /** \brief Read the state from the robot hardware. */
-  virtual void read(ros::Duration &elapsed_time);
-
-  /** \brief Write the command to the robot hardware. */
-  virtual void write(ros::Duration &elapsed_time);
-
-  /** \breif Enforce limits for all values before writing */
-  virtual void enforceLimits(ros::Duration &period);
-protected:
-  ros::Publisher lvelfront_pub;
-  ros::Publisher lvelcenter_pub;
-  ros::Publisher lvelrear_pub;
-  ros::Publisher rvelfront_pub;
-  ros::Publisher rvelcenter_pub;
-  ros::Publisher rvelrear_pub;
-};  // class
-
-}  // namespace
-
+#ifdef __GNUC__
+#define ROSPARAM_SHORTCUTS_DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define ROSPARAM_SHORTCUTS_DEPRECATED __declspec(deprecated)
+#elif defined(__clang__)
+#define ROSPARAM_SHORTCUTS_DEPRECATED __attribute__((deprecated("Use of this method is deprecated")))
+#else
+#define ROSPARAM_SHORTCUTS_DEPRECATED /* Nothing */
 #endif
+
+#endif  // ROSPARAM_SHORTCUTS_DEPRECATION_H
