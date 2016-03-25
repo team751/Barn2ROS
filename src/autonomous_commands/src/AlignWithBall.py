@@ -11,7 +11,7 @@ import tf
 import math
 
 from std_msgs.msg import Float32
-from geometry_msgs.msg import Twist, Point
+from geometry_msgs.msg import Twist, Point32
 import autonomous_commands.msg
 
 publisher = rospy.Publisher('/robot/ddc/cmd_vel', Twist, queue_size=10)
@@ -23,26 +23,29 @@ class AlignWithBall(object):
   _currentY = 0.0
   _currentAngle = 0.0
   _dataReceived = False
+  _lastMessage = None
 
   # create messages that are used to publish feedback/result
   _feedback = autonomous_commands.msg.AlignWithBallFeedback()
   _result   = autonomous_commands.msg.AlignWithBallResult()
 
   def __init__(self, name):
-    rospy.Subscriber("circle_detect", Point, self.ballPointReceived);
+    rospy.Subscriber("/ballPoint", Point32, self.ballPointReceived);
     rospy.Subscriber("/angle", Float32, self.robotAngleReceived);
 
     self._action_name = name
     self._as = actionlib.SimpleActionServer(self._action_name, autonomous_commands.msg.AlignWithBallAction, execute_cb=self.execute, auto_start = False)
     self._as.start()
     
-  def diff(robotTheta, ballTheta):
+  def diff(self, robotTheta, ballTheta):
     return ((robotTheta - ballTheta + math.pi) % (2 * math.pi)) - math.pi
   
-  def getRobotTheta():
+  def getRobotTheta(self):
     return self._currentAngle
     
   def execute(self, goal):
+    if (self._lastMessage == None):
+      self._lastMessage = rospy.Time.now()
     if (rospy.Time.now() - self._lastMessage > rospy.Duration(5)):
       return
 
@@ -58,7 +61,7 @@ class AlignWithBall(object):
     rate = rospy.Rate(20) # 20hz
     while not rospy.is_shutdown() and not self._as.is_preempt_requested():
       try:
-          actRot = getRobotTheta()
+          actRot = self.getRobotTheta()
 
           if desiredRotation == 0:
             desiredRotation = (actRot + rotation) % math.pi
@@ -74,7 +77,7 @@ class AlignWithBall(object):
             break
 
           # offset = (actRot - desiredRotation)
-          offset = diff(actRot, rotation)
+          offset = self.diff(actRot, rotation)
           
           print "OFFSET: " + str(offset)
 
@@ -132,7 +135,6 @@ class AlignWithBall(object):
 
   def robotAngleReceived(self, data):
     self._currentAngle = data.data
-    print self._currentAngle
     
   def ballPointReceived(self, data):
     self._currentX = data.x

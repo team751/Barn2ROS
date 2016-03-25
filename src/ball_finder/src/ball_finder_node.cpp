@@ -130,6 +130,7 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   double minX = 0;
   double minY = 0;
   double minIntensity = 0;
+  double minRadius = 0;
   int minPFD = 0;
 
   visualization_msgs::MarkerArray markerArray;
@@ -141,18 +142,19 @@ void chatterCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   //     }
 
 
-double rOrig = .28/2;
-      for (int a = 0; a < 720; a += 2) {
+// double rOrig = .28/2;
+for (double rOrig = .1/2; rOrig < .2/2; rOrig += .01/2) {
+      for (int a = 0; a < 720; a += 1) {
         bool equation = a > 360;
         int i = a % 360;
         
-        if (i < 5 || i > 355) continue;
+        if ((i > 40 && i < 320) || i > 360) continue;
 
         float theta = msg->angle_min + i * msg->angle_increment;
         double b = msg->ranges[i] * cos(theta); // x1
         double e = msg->ranges[i] * sin(theta); // y1
-        double c = msg->ranges[i + 3] * cos(theta + 3*msg->angle_increment); // x2
-        double f = msg->ranges[i + 3] * sin(theta + 3*msg->angle_increment); // y2
+        double c = msg->ranges[(i + 3) % 360] * cos(theta + 3*msg->angle_increment); // x2
+        double f = msg->ranges[(i + 3) % 360] * sin(theta + 3*msg->angle_increment); // y2
 
         double  r = rOrig;
 
@@ -160,7 +162,7 @@ double rOrig = .28/2;
 
         // std::cout << "T: " << theta << " R: " << msg->ranges[i] << " X1: " << b << " Y1: " << e << std::endl;
 
-        double x0 = computeXVal(b, c, e, f, r, true);
+        double x0 = computeXVal(b, c, e, f, r, false);
         double y0 = computeYVal(x0, b, c, e, f, r);
 
         if (msg->ranges[i] < .1) continue;
@@ -168,15 +170,15 @@ double rOrig = .28/2;
         
         double score = 0;
 
-        int pointsForDistance = 0.8 * (720*asin(r/(2*msg->ranges[i])))/(2*3.1415);
+        int pointsForDistance = 1.25 * (720*asin(r/(1.25*sqrt(x0 * x0 + y0 * y0))))/(2*3.1415);
 
-        if (pointsForDistance < 8) continue;
+        if (pointsForDistance < 6) continue;
 
-        double deltaTheta = 2 * asin(sqrt((b - c) * (b - c) + (e - f) * (e - f)) / (2 * r));
-        double theoreticalTheta = deltaTheta;
+        double deltaTheta = .65 * asin(sqrt((b - c) * (b - c) + (e - f) * (e - f)) / (2 * rOrig));
+        double theoreticalTheta = 0;
 
         for (int j = 0; j <= pointsForDistance; j += 1) {
-          double dist = msg->ranges[i + j];
+          double dist = msg->ranges[(i + j) % 360];
 
           double cx = dist * cos(theta + msg->angle_increment * (j));
           double cy = dist * sin(theta + msg->angle_increment * (j));
@@ -205,8 +207,64 @@ double rOrig = .28/2;
           
           score += distance;
 
+        //   if (i == 350) {
+        //     std::cout << "X: " << fullyTransformedPoint[0] << " Y: " << fullyTransformedPoint[1] << std::endl << std::endl;
+        //                       visualization_msgs::Marker marker;
+        //     marker.header.frame_id = "xv11_front";
+        // marker.header.stamp = ros::Time();
+        // marker.ns = "points";
+        // marker.id = j + 1;
+        // marker.type = visualization_msgs::Marker::SPHERE;
+        // marker.action = visualization_msgs::Marker::ADD;
+        // marker.pose.position.x = fullyTransformedPoint[0];
+        // marker.pose.position.y = fullyTransformedPoint[1];
+        // marker.pose.position.z = 0;
+        // marker.pose.orientation.x = 0.0;
+        // marker.pose.orientation.y = 0.0;
+        // marker.pose.orientation.z = 0.0;
+        // marker.pose.orientation.w = 1.0;
+        // marker.scale.x = 0.01;
+        // marker.scale.y = 0.01;
+        // marker.scale.z = 0.01;
+        // marker.color.a = 1.0; // Don't forget to set the alpha!
+        // marker.color.r = 1;
+        // marker.color.g = 0.0;
+        // marker.color.b = 0;
+
+        // markerArray.markers.push_back(marker);
+        //   }
+
+        //   if (i==350 && j== 0) {
+        //                                   visualization_msgs::Marker marker;
+
+        //                 marker.header.frame_id = "xv11_front";
+        // marker.header.stamp = ros::Time();
+        // marker.ns = "points";
+        // marker.id = j;
+        // marker.type = visualization_msgs::Marker::SPHERE;
+        // marker.action = visualization_msgs::Marker::ADD;
+        // marker.pose.position.x = center[0];
+        // marker.pose.position.y = center[1];
+        // marker.pose.position.z = 0;
+        // marker.pose.orientation.x = 0.0;
+        // marker.pose.orientation.y = 0.0;
+        // marker.pose.orientation.z = 0.0;
+        // marker.pose.orientation.w = 1.0;
+        // marker.scale.x = 0.05;
+        // marker.scale.y = 0.05;
+        // marker.scale.z = 0.05;
+        // marker.color.a = 1.0; // Don't forget to set the alpha!
+        // marker.color.r = 0;
+        // marker.color.g = 1.0;
+        // marker.color.b = 0;
+
+        // markerArray.markers.push_back(marker);
+        //   }
+
         // std::cout << cx0 << std::endl;
         }
+
+        // score /= pointsForDistance;
         
         if (fabs(score) < minScore && r - rOrig <= .2) {
 
@@ -214,6 +272,7 @@ double rOrig = .28/2;
           minX = x0;
           minY = y0;
           minPFD = pointsForDistance;
+          minRadius = rOrig;
           minIntensity = msg->intensities[i];
         }
         
@@ -231,9 +290,9 @@ double rOrig = .28/2;
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
         marker.pose.orientation.w = 1.0;
-        marker.scale.x = r * 2;
-        marker.scale.y = r * 2;
-        marker.scale.z = r * 2;
+        marker.scale.x = minRadius * 2;
+        marker.scale.y = minRadius * 2;
+        marker.scale.z = minRadius * 2;
         marker.color.a = 1.0; // Don't forget to set the alpha!
         marker.color.r = 0;
         marker.color.g = 0.0;
@@ -241,8 +300,9 @@ double rOrig = .28/2;
 
         if (score < 10) markerArray.markers.push_back(marker);
       }
+    }
 
-      std::cout << minScore << ", " << minPFD << " => " << " " << minX << " : " << minY << std::endl;
+      std::cout << minScore << ", " << minPFD << " => " << " " << minRadius << " : " << sqrt(minX * minX + minY * minY) << std::endl;
 
       if (minScore < 10) {
         visualization_msgs::Marker marker;
@@ -259,9 +319,9 @@ double rOrig = .28/2;
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
         marker.pose.orientation.w = 1.0;
-        marker.scale.x = rOrig*2;
-        marker.scale.y = rOrig*2;
-        marker.scale.z = rOrig*2;
+        marker.scale.x = .2;
+        marker.scale.y = .2;
+        marker.scale.z = .2;
         marker.color.a = 1.0; // Don't forget to set the alpha!
         marker.color.r = 1.0;
         marker.color.g = 1.0;

@@ -6,12 +6,8 @@ MotorSender:
   message_divider: ","
   
   controller_topics:
-    - /lvelfront
     - /lvelcenter
-    - /lvelrear
-    - /rvelfront
     - /rvelcenter
-    - /rvelrear
     
   network:
     ip: 10.7.51.109
