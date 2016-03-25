@@ -24,43 +24,23 @@ def listener():
     imuPub = rospy.Publisher(imuTopic, Imu, queue_size=10, latch=True)
     lWheelPub = rospy.Publisher(lwheelTopic, Int16, queue_size=10, latch=True)
     rWheelPub = rospy.Publisher(rwheelTopic, Int16, queue_size=10, latch=True)
+    gyroPub = rospy.Publisher("/angle", Float32, queue_size=10, latch=True)
     
     while True:
         data, addr = sock.recvfrom(1024)
+        
         arr = data[1:-1].split(",")
         
         # encoder
         lWheelMsg = Int16 (int(arr[0]))
         rWheelMsg = Int16 (int(arr[1]))
-        
-        # IMU
-        imuMsg = Imu()
-        
-        imuMsg.header.stamp = rospy.Time.now()
-        imuMsg.header.frame_id = odomFrame
-                
-        imuMsg.angular_velocity.x = float(arr[2])
-        imuMsg.angular_velocity.y = float(arr[3])
-        imuMsg.angular_velocity.z = float(arr[4])
-        
-        imuMsg.linear_acceleration.x = float(arr[5])
-        imuMsg.linear_acceleration.y = float(arr[6])
-        imuMsg.linear_acceleration.z = float(arr[7])
-        
-        imuMsg.orientation_covariance[0] = -1
-        
-        imuMsg.angular_velocity_covariance = [-0.01,0, 0,
-                                              0, -0.01, 0,
-                                              0, 0, -0.01]
-                                              
-        imuMsg.linear_acceleration_covariance = [-0.01,0, 0,
-                                                 0, -0.01, 0,
-                                                 0, 0, -0.01]
-        
-        # publish messages
+    
+        gyroMsg = Float32(float(arr[2]))
+    
+	# publish messages
         lWheelPub.publish(lWheelMsg)
         rWheelPub.publish(rWheelMsg)
-        imuPub.publish(imuMsg)
+        gyroPub.publish(gyroMsg)
 
 if __name__ == '__main__':
     listener()

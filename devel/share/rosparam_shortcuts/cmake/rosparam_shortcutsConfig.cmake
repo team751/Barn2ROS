@@ -67,14 +67,14 @@ set(rosparam_shortcuts_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(rosparam_shortcuts_SOURCE_PREFIX /home/sam/Barn2ROS/src/dependencies/rosparam_shortcuts)
-  set(rosparam_shortcuts_DEVEL_PREFIX /home/sam/Barn2ROS/devel)
+  set(rosparam_shortcuts_SOURCE_PREFIX /Barn2ROS/src/dependencies/rosparam_shortcuts)
+  set(rosparam_shortcuts_DEVEL_PREFIX /Barn2ROS/devel)
   set(rosparam_shortcuts_INSTALL_PREFIX "")
   set(rosparam_shortcuts_PREFIX ${rosparam_shortcuts_DEVEL_PREFIX})
 else()
   set(rosparam_shortcuts_SOURCE_PREFIX "")
   set(rosparam_shortcuts_DEVEL_PREFIX "")
-  set(rosparam_shortcuts_INSTALL_PREFIX /home/sam/Barn2ROS/install)
+  set(rosparam_shortcuts_INSTALL_PREFIX /Barn2ROS/install)
   set(rosparam_shortcuts_PREFIX ${rosparam_shortcuts_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(rosparam_shortcuts_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/sam/Barn2ROS/src/dependencies/rosparam_shortcuts/include;/usr/include/eigen3 " STREQUAL " ")
+if(NOT "/Barn2ROS/src/dependencies/rosparam_shortcuts/include;/usr/include/eigen3 " STREQUAL " ")
   set(rosparam_shortcuts_INCLUDE_DIRS "")
-  set(_include_dirs "/home/sam/Barn2ROS/src/dependencies/rosparam_shortcuts/include;/usr/include/eigen3")
+  set(_include_dirs "/Barn2ROS/src/dependencies/rosparam_shortcuts/include;/usr/include/eigen3")
   foreach(idir ${_include_dirs})
     if(IS_ABSOLUTE ${idir} AND IS_DIRECTORY ${idir})
       set(include ${idir})
@@ -103,7 +103,7 @@ if(NOT "/home/sam/Barn2ROS/src/dependencies/rosparam_shortcuts/include;/usr/incl
         message(FATAL_ERROR "Project 'rosparam_shortcuts' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  Ask the maintainer 'Dave Coleman <davetcoleman@gmail.com>' to fix it.")
       endif()
     else()
-      message(FATAL_ERROR "Project 'rosparam_shortcuts' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/sam/Barn2ROS/src/dependencies/rosparam_shortcuts/${idir}'.  Ask the maintainer 'Dave Coleman <davetcoleman@gmail.com>' to fix it.")
+      message(FATAL_ERROR "Project 'rosparam_shortcuts' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/Barn2ROS/src/dependencies/rosparam_shortcuts/${idir}'.  Ask the maintainer 'Dave Coleman <davetcoleman@gmail.com>' to fix it.")
     endif()
     _list_append_unique(rosparam_shortcuts_INCLUDE_DIRS ${include})
   endforeach()
@@ -122,7 +122,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/sam/Barn2ROS/devel/lib;/home/sam/Barn2ROS/devel/lib;/opt/ros/indigo/lib)
+    foreach(path /Barn2ROS/devel/lib;/Barn2ROS/devel/lib;/opt/ros/indigo/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

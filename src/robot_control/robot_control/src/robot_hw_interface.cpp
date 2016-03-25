@@ -40,6 +40,7 @@
 #include <robot_control/robot_hw_interface.h>
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Int16.h"
 
 namespace robot_control
 {
@@ -56,12 +57,29 @@ RobotHWInterface::RobotHWInterface(ros::NodeHandle &nh, urdf::Model *urdf_model)
   rvelfront_pub = n.advertise<std_msgs::Float32>("/rvelfront", 1000);
   rvelcenter_pub = n.advertise<std_msgs::Float32>("/rvelcenter", 1000);
   rvelrear_pub = n.advertise<std_msgs::Float32>("/rvelrear", 1000);
+  
+  lWheelSubscriber = n.subscribe("/lwheel", 1000, &RobotHWInterface::lWheelCallback, this);
+  rWheelSubscriber = n.subscribe("/rwheel", 1000, &RobotHWInterface::rWheelCallback, this);
 
   ROS_INFO_NAMED("robot_hw_interface", "RobotHWInterface Ready.");
 }
 
+void RobotHWInterface::lWheelCallback(const std_msgs::Int16 msg) {
+   lWheel = msg.data;
+}
+
+void RobotHWInterface::rWheelCallback(const std_msgs::Int16 msg) {
+  rWheel = msg.data;
+}
+
 void RobotHWInterface::read(ros::Duration &elapsed_time)
 {
+  joint_position_[0] = lWheel;
+  joint_position_[1] = lWheel;
+  joint_position_[2] = lWheel;
+  joint_position_[3] = rWheel;
+  joint_position_[4] = rWheel;
+  joint_position_[5] = rWheel;
   // ----------------------------------------------------
   // ----------------------------------------------------
   // ----------------------------------------------------
@@ -112,8 +130,8 @@ void RobotHWInterface::write(ros::Duration &elapsed_time)
   // sim_hw_interface.cpp IN THIS PACKAGE
   //
   // DUMMY PASS-THROUGH CODE
-  for (std::size_t joint_id = 0; joint_id < num_joints_; ++joint_id)
-    joint_position_[joint_id] += joint_position_command_[joint_id];
+  // for (std::size_t joint_id = 0; joint_id < 6; ++joint_id)
+  // 	joint_position_[joint_id] += joint_position_command_[joint_id];
   // END DUMMY CODE
   //
   // ----------------------------------------------------

@@ -1,9 +1,6 @@
 <launch>
 	<include file="$(find launch)/launch/roborio_comms.launch" />
 	<include file="$(find launch)/launch/lasers.launch" />
-	<include file="$(find launch)/launch/lidar.launch" />
-	<include file="$(find launch)/launch/amcl.launch" />
-	<include file="$(find launch)/launch/move_base.launch" />
 	<include file="$(find autonomous_commands)/launch/action_servers.launch" />
 	<include file="$(find ros_control_boilerplate)/robot_control/launch/robot_hardware.launch" />
 </launch>

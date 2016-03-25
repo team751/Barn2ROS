@@ -41,6 +41,7 @@
 #define ROBOT_CONTROL__ROBOT_HW_INTERFACE_H
 
 #include <ros_control_boilerplate/generic_hw_interface.h>
+#include "std_msgs/Int16.h"
 
 namespace robot_control
 {
@@ -70,6 +71,15 @@ protected:
   ros::Publisher rvelfront_pub;
   ros::Publisher rvelcenter_pub;
   ros::Publisher rvelrear_pub;
+
+  ros::Subscriber lWheelSubscriber;
+  ros::Subscriber rWheelSubscriber;
+
+  int lWheel;
+  int rWheel;
+
+  void lWheelCallback(std_msgs::Int16);
+  void rWheelCallback(std_msgs::Int16);
 };  // class
 
 }  // namespace

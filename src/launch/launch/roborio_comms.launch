@@ -6,5 +6,5 @@
   <node name="MotorSender" pkg="roborio_comms" type="motor_sender.py" />
   
   <!-- Handles recieving encoder data, imu data, and robot status data -->
-  <node name="StatusReciever" pkg="roborio_comms" type="status_receiver.py" />
+  <node name="StatusReciever" pkg="roborio_comms" type="status_receiver.py" output="screen" />
 </launch>

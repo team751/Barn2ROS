@@ -24,7 +24,6 @@
 		<arg name="headless" value="$(arg headless)" />
 	</include>
 
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_gazebo)/rviz/rviz.rviz" />
 
 	<group ns="robot">
 		<!-- Load joint controller configurations from YAML file to parameter server -->
@@ -35,9 +34,7 @@
 	<param name="robot_description" command="$(find xacro)/xacro.py '$(find robot_description)/urdf/robot.xacro'" />
 
  	<!-- Include lidar base -->
- 	<include file="$(find launch)/launch/lidar.launch" />
-	<include file="$(find launch)/launch/amcl.launch" />
-	<include file="$(find launch)/launch/move_base.launch" />
+ 	<include file="$(find launch)/launch/lasers.launch" />
 
 	<include file="$(find autonomous_commands)/launch/action_servers.launch" />
 
@@ -49,9 +46,6 @@
 	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model robot -param robot_description  -x $(arg x) -y $(arg y)
 	 -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" />
 
-	<node pkg="tf" type="static_transform_publisher" name="rear_lidar_base_link" args="-.2 0 -0.063 3.1415 -0.07 0 base_link xv11_rear 100"/> 
-	<node pkg="tf" type="static_transform_publisher" name="front_lidar_base_link" args=".2 0 -0.063 0 -0.07 0 base_link xv11_front 100"/> 
-
 	<!-- load the controllers -->
-	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/robot" args="joint_state_controller ddc" />
+	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/robot" args="joint_state_controller ddc --shutdown-timeout 1" />
 </launch>

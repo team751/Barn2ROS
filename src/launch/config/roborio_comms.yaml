@@ -14,8 +14,8 @@ MotorSender:
     - /rvelrear
     
   network:
-    ip: 127.0.0.1
-    port: 9999
+    ip: 10.7.51.109
+    port: 9000
     
 StatusReciever:
   imu_topic: /imu

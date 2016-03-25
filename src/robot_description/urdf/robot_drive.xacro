@@ -247,7 +247,7 @@
 						   stddev of 0.01m will put 99.7% of samples within 0.03m of the true
 						   reading. -->
 						<mean>0.0</mean>
-						<stddev>0.01</stddev>
+						<stddev>0.001</stddev>
 					</noise>
 				</ray>
 				<plugin name="xv11_${suffix}_controller" filename="libgazebo_ros_gpu_laser.so">
@@ -373,7 +373,7 @@
 	<xacro:wheel suffix="lrear" origin="-.25 -0.395 0" motor="lmotor" />
 
 	<xacro:lidar suffix="rear" origin="-.2 0 -0.063" topic="laserscan" minang="-3.1415" maxang="3.1415" rotation="3.1415" />370.487000000
-	<xacro:lidar suffix="front" origin=".2 0 -0.063" topic="laserscan_front" minang="-1.021018" maxang="1.021018" rotation="0" />
+	<xacro:lidar suffix="front" origin=".2 0 -0.063" topic="laserscan_front" minang="-3.1415" maxang="3.1415" rotation="0" />
 
 
 
